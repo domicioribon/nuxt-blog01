@@ -1,17 +1,52 @@
 <script setup lang="ts">
 import axios from "axios";
 
+const post = ref<any>({
+  category: {
+    title: "",
+  },
+});
+const route = useRoute();
 const router = useRouter();
-const form = ref<any>({
-  category: {},
-  imageUrl:
-    "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80",
+
+onMounted(() => {
+  sendGetById(route.params.id);
 });
 
-function sendCreatePosts() {
-  form.value.datetime = new Date().toISOString();
+function sendGetById(id: any) {
   axios
-    .post(`http://localhost:3030/posts/`, form.value)
+    .get(`http://localhost:3030/posts/${id}`)
+    .then((resp) => {
+      post.value = resp.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function clickSalvar() {
+  sendUpdatePosts();
+}
+
+function sendUpdatePosts() {
+  axios
+    .put(`http://localhost:3030/posts/${route.params.id}`, post.value)
+    .then(() => {
+      console.log("success");
+      router.push("/");
+    })
+    .catch(() => {
+      console.log("error");
+    });
+}
+
+function clickDeletar() {
+  sendDeletePosts();
+}
+
+function sendDeletePosts() {
+  axios
+    .delete(`http://localhost:3030/posts/${route.params.id}`)
     .then(() => {
       console.log("success");
       router.push("/");
@@ -23,6 +58,10 @@ function sendCreatePosts() {
 </script>
 
 <template>
+  <!-- <div>editar {{ $route.params.id }}</div>
+  <div>
+    {{ post }}
+  </div> -->
   <div class="mx-auto max-w-2xl lg:max-w-4xl mt-8">
     <div class="font-semibold text-3xl">Novo post</div>
 
@@ -36,12 +75,12 @@ function sendCreatePosts() {
         <input
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="titulo"
-          v-model="form.title"
+          v-model="post.title"
         />
       </div>
     </div>
 
-    <div>
+    <!-- <div>
       <label
         for="email"
         class="block text-sm font-medium leading-6 text-gray-900"
@@ -51,10 +90,10 @@ function sendCreatePosts() {
         <input
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Categoria"
-          v-model="form.category.title"
+          v-model="post.category?.title"
         />
       </div>
-    </div>
+    </div> -->
 
     <div>
       <label
@@ -66,7 +105,7 @@ function sendCreatePosts() {
         <input
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="URL da imagem"
-          v-model="form.imageUrl"
+          v-model="post.imageUrl"
         />
       </div>
     </div>
@@ -79,7 +118,7 @@ function sendCreatePosts() {
         <textarea
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Descrição"
-          v-model="form.description"
+          v-model="post.description"
         >
         </textarea>
       </div>
@@ -93,20 +132,28 @@ function sendCreatePosts() {
         <textarea
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Conteudo"
-          v-model="form.content"
+          v-model="post.content"
           rows="15"
         >
         </textarea>
       </div>
     </div>
   </div>
-  <div class="flex flex-row-reverse mx-auto max-w-2xl lg:max-w-4xl mt-8 mb-8">
+  <div class="flex mx-auto max-w-2xl lg:max-w-4xl mt-8 mb-8">
     <button
       type="button"
       class="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      @click="sendCreatePosts"
+      @click="clickSalvar"
     >
       Salvar
+    </button>
+
+    <button
+      type="button"
+      class="rounded-md ml-4 bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+      @click="clickDeletar"
+    >
+      Deletar
     </button>
   </div>
 </template>
