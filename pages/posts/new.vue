@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import axios from "axios";
+import { baseURL } from "@/config/config";
 
 const router = useRouter();
 const form = ref<any>({
-  category: {},
+  category: "",
   imageUrl:
     "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80",
 });
@@ -11,7 +12,7 @@ const form = ref<any>({
 function sendCreatePosts() {
   form.value.datetime = new Date().toISOString();
   axios
-    .post(`http://localhost:3030/posts/`, form.value)
+    .post(`${baseURL}/posts`, form.value)
     .then(() => {
       console.log("success");
       router.push("/");
@@ -51,7 +52,7 @@ function sendCreatePosts() {
         <input
           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Categoria"
-          v-model="form.category.title"
+          v-model="form.category"
         />
       </div>
     </div>

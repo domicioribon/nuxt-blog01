@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import { useRoute } from "vue-router";
+import { baseURL } from "@/config/config";
 
 const route = useRoute();
 const post = ref<any>({});
@@ -11,7 +12,7 @@ onMounted(() => {
 
 function sendGetById(id: string) {
   axios
-    .get(`http://localhost:3030/posts/${id}`)
+    .get(`${baseURL}/posts/${id}`)
     .then((response) => {
       post.value = response.data;
     })
@@ -35,7 +36,7 @@ function sendGetById(id: string) {
   <div class="bg-white px-6 py-32 lg:px-8">
     <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
       <p class="text-base font-semibold leading-7 text-indigo-600">
-        {{ post.category?.title }}
+        {{ post.category }}
       </p>
       <h1
         class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"

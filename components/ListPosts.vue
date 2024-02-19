@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
+import { baseURL } from "@/config/config";
 
 const posts = ref<Array<any>>([]);
 
@@ -9,7 +10,7 @@ onMounted(() => {
 
 function sendGetAllPosts() {
   axios
-    .get("http://localhost:3030/posts")
+    .get(`${baseURL}/posts`)
     .then((response) => {
       posts.value = response.data;
     })
@@ -62,7 +63,7 @@ const emits = defineEmits(["onClickPost"]);
                   href="#"
                   class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
                   @click.prevent
-                  >{{ post.category.title }}</a
+                  >{{ post.category }}</a
                 >
               </div>
               <div class="group relative max-w-xl">
